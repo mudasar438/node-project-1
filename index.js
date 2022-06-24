@@ -1,38 +1,41 @@
-const express = require("express");
-const path = require("path");
-const route = express.Router();
-const app = express();
+const {MongoClient} = require('mongodb');
+//--------- url mongo db connection ---------
+const url = "mongodb://localhost:27017/";
+const database = "e-comm";
+const client = new MongoClient(url)
 
+const getdata = async()=>{
+    let result = await client.connect();
 
-const reqFilter = (req, res, next) => {
-    if(!req.query.age){
-        res.send("Age is Required")
-    } else if(req.query.age < 18){
-        res.send("You are not allowed")
+    let db = result.db(database);
+    let collection = db.collection('product');
+    return collection
+    // let data = await collection.find({}).toArray();
+    // console.log(data);
+    // return data;
 
-    }
-    else{
-
-        next()
-    }
-    // app.use(reqFilter
 }
-route.use(reqFilter)
-// app.use(reqFilter)
-app.get('/',(req,res)=>{
-    res.send("This is Home Page")
-})
-route.get('/about',reqFilter,(req,res)=>{
-    res.send("This is about Page")
-})
-route.get('/contact',(req,res)=>{
-    res.send("This is Contact Page")
-})
+getdata();
 
-app.use('/',route)
+//----- get data acces from mongodb using promise ---
+// getdata().then(data=>{
+//     data.find().toArray().then((result)=>{
+//         console.log(result);
 
-app.listen(5000, (err)=>{
-    if(!err){
-        console.log("Server is Running")
-    }
-})
+//     })
+//     .catch((err)=>{
+//         console.log(err)
+
+//     })
+//     console.log(data);
+// })
+
+
+// ------- DATA ACCESS With Async/Await ----------
+// const main = async()=>{
+// let data = await getdata();
+// let result = await data.find().toArray();
+// console.log(result);
+// }
+
+// main()
