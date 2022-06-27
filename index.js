@@ -7,46 +7,62 @@ app.use(cors())
 require('./config')
 
 
-// post single data to mongoDB
-// app.post('/product', (req, res) => {
-//     const product = new Product(req.body);
-//     product.save()
-//         .then(() => {
-//             res.send(product);
-//         }
-//         ).catch(err => {
-//             res.send(err);
-//         }
-//         );
-// }
-// );
 
+app.get("/search/:key", async (req, res) => {
+    // res.send("Search is done")
+    console.log(req.params.key)
+    let data = await Product.find(
+        {
+            "$or":[
+                {"name": { $regex: req.params.key}}
+                ,{"description": { $regex: req.params.key}}
+                // 
+                    
+                
 
-app.post('/create',async(req,res)=>{
-    console.log(req.body)
-    
-    let data = await Product(req.body);
-    let result = await data.save();
-    console.log(result);
-    res.send(result);
-   
+            ]
+        }
+    )
+    res.send(data)
 })
-app.get('/get',async(req,res)=>{
-    let data = await Product.find();
-    res.send(data);
-
-})
-
-app.delete('/delete/:_id',async(req,res)=>{
-    console.log(req.params);
-    let data = await Product.deleteOne(req.params);
-    res.send(data);
-    console.log("Id deleted")
-
-})
-
 
 app.listen(5000,()=>{
     console.log("Server is Running on Port 5000")
 
 })
+
+
+
+
+
+
+
+// --------post multiple data to mongoDB --------
+
+// app.post('/create',async(req,res)=>{
+//     console.log(req.body)
+    
+//     let data = await Product(req.body);
+//     let result = await data.save();
+//     console.log(result);
+//     res.send(result);
+   
+// })
+// app.get('/get',async(req,res)=>{
+//     let data = await Product.find();
+//     res.send(data);
+
+// })  
+
+
+//-------- delete api from mongodb -----
+
+// app.delete('/delete/:_id',async(req,res)=>{
+//     console.log(req.params);
+//     let data = await Product.deleteOne(req.params);
+//     res.send(data);
+//     console.log("Id deleted")
+
+// })
+
+
